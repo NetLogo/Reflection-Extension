@@ -14,7 +14,7 @@ artifactName := { (_, _, _) => "reflection.jar" }
 packageOptions := Seq(
   Package.ManifestAttributes(
     ("Extension-Name", "reflection"),
-    ("Class-Manager", "SampleScalaExtension"),
+    ("Class-Manager", "NetLogoReflection"),
     ("NetLogo-Extension-API-Version", "5.0")))
 
 packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
@@ -35,7 +35,7 @@ packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
       s.log.warn("working tree not clean; no zip archive made")
       IO.delete(base / "reflection.zip")
     }
-    jar
+    
   }
 
 cleanFiles <++= baseDirectory { base =>
