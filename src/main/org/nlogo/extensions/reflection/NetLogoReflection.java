@@ -21,17 +21,13 @@ import java.util.Map;
  */
 public class NetLogoReflection implements ClassManager {
 
-    @Override
-    public Object runOnce(ExtensionManager em) {
-        return null;
+    public void runOnce(ExtensionManager em) {
     }
 
-    @Override
-    public Object load(PrimitiveManager primitiveManager) {
+    public void load(PrimitiveManager primitiveManager) {
         primitiveManager.addPrimitive("breeds", new Breeds());
         primitiveManager.addPrimitive("globals", new Globals());
         primitiveManager.addPrimitive("procedures", new Procedures());
-        return null;
     }
 
     public static class Globals extends DefaultReporter {
@@ -110,7 +106,7 @@ public class NetLogoReflection implements ClassManager {
             tuple.add(vars.toLogoList());
             llb.add(tuple.toLogoList());
 
-            for (Map.Entry<Object, List<Object>> entry : App.app().workspace().world().program().breedsOwn().entrySet())
+            for (Map.Entry<String, List<String>> entry : App.app().workspace().world().program().breedsOwn().entrySet())
             {
                 tuple  = new LogoListBuilder();
                 vars = new LogoListBuilder();
@@ -127,33 +123,28 @@ public class NetLogoReflection implements ClassManager {
         }
     }
 
-    @Override
-    public Object unload(ExtensionManager em) {
-        return null;
+    public void unload(ExtensionManager em) {
     }
 
-    @Override
     public ExtensionObject readExtensionObject(ExtensionManager reader, Object typeName, Object value) {
         return null;
     }
 
-    @Override
     public StringBuilder exportWorld() {
         return null;
     }
 
-    @Override
-    public Object importWorld(List<Object> lines, ExtensionManager reader, ImportErrorHandler handler) {
+    public void importWorld(List<String[]> lines, ExtensionManager reader, ImportErrorHandler handler) {
+    }
+
+    public void clearAll() {
+    }
+
+    public ExtensionObject readExtensionObject(ExtensionManager reader, String typeName, String value){
         return null;
     }
 
-    @Override
-    public Object clearAll() {
-        return null;
-    }
-
-    @Override
-    public List<Object> additionalJars() {
+    public List<String> additionalJars() {
         return null;
     }
 }

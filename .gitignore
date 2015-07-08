@@ -1,7 +1,8 @@
 /bin/*
 /project/*
 *.class
-
+target/*
 *.cache
-
+*.jar
+*.jar.*
 *.xml
