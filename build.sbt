@@ -18,7 +18,7 @@ packageOptions := Seq(
     ("NetLogo-Extension-API-Version", "5.0")))
 
 packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
-  (jar, base, s) =>
+  (jar, base: java.io.File, s) =>
     IO.copyFile(jar, base / "reflection.jar")
     Process("pack200 --modification-time=latest --effort=9 --strip-debug " +
             "--no-keep-file-order --unknown-attribute=strip " +
@@ -29,13 +29,12 @@ packageBin in Compile <<= (packageBin in Compile, baseDirectory, streams) map {
       IO.copyFile(base / "reflection.jar", base / "reflection" / "reflection.jar")
       IO.copyFile(base / "reflection.jar.pack.gz", base / "reflection" / "reflection.jar.pack.gz")
       Process("zip reflection.zip reflection/reflection.jar reflection/reflection.jar.pack.gz").!!
-      IO.delete(base / "reflection")
     }
     else {
       s.log.warn("working tree not clean; no zip archive made")
       IO.delete(base / "reflection.zip")
     }
-    
+    base / "reflection.zip"
   }
 
 cleanFiles <++= baseDirectory { base =>

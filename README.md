@@ -10,3 +10,6 @@ reflection:globals reports a list with the names of all global variables
 
 ## `procedures`
 `reflection:procedures` reports a list of all procedures and their arguments. It also tells you whether they are reporters or commands.
+
+## `current-procedure`
+`reflection:current-procedure` reports the name of the current-procedure.
