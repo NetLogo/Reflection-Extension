@@ -11,7 +11,9 @@ import org.nlogo.api.PrimitiveManager;
 import org.nlogo.api.Syntax;
 import org.nlogo.app.App;
 import org.nlogo.headless.HeadlessWorkspace;
+import org.nlogo.nvm.Activation;
 import org.nlogo.nvm.Procedure;
+import org.nlogo.nvm.ExtensionContext;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,8 @@ public class NetLogoReflection implements ClassManager {
         primitiveManager.addPrimitive("breeds", new Breeds());
         primitiveManager.addPrimitive("globals", new Globals());
         primitiveManager.addPrimitive("procedures", new Procedures());
+        primitiveManager.addPrimitive("current-procedure", new CurrentProcedure());
+        primitiveManager.addPrimitive("callers", new Callers());
     }
 
     public static class Globals extends DefaultReporter {
@@ -82,6 +86,34 @@ public class NetLogoReflection implements ClassManager {
             }
             return outerLLB.toLogoList();
         }
+    }
+
+    public static class CurrentProcedure extends DefaultReporter {
+      public Syntax getSyntax() {
+        return Syntax.reporterSyntax(new int[] {}, Syntax.StringType());
+      }
+
+      public Object report(Argument args[], Context context)
+        throws ExtensionException, org.nlogo.api.LogoException {
+        return ((ExtensionContext) context).nvmContext().activation.procedure.name;
+      }
+    }
+
+    public static class Callers extends DefaultReporter {
+      public Syntax getSyntax() {
+        return Syntax.reporterSyntax(new int[] {}, Syntax.ListType());
+      }
+
+      public Object report(Argument args[], Context context)
+        throws ExtensionException, org.nlogo.api.LogoException {
+        Activation activation = ((ExtensionContext) context).nvmContext().activation;
+        LogoListBuilder llb = new LogoListBuilder();
+        while (activation != null && activation.procedure != null) {
+          llb.add(activation.procedure.name);
+          activation = activation.parent;
+        }
+        return llb.toLogoList();
+      }
     }
 
     public static class Breeds extends DefaultReporter {
