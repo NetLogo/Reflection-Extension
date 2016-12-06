@@ -1,6 +1,6 @@
 # Reflection-Extension
 This extension allows you to extract names of breeds, procedures, and variables (global and breed-specific ones).
-It has three simple reporters:
+It has a few simple reporters:
 
 ## `globals`
 reflection:globals reports a list with the names of all global variables
