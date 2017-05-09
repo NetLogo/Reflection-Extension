@@ -1,6 +1,6 @@
 /bin/*
-/project/*
 *.class
+target
 target/*
 *.cache
 *.jar
