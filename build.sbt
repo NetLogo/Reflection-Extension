@@ -1,4 +1,4 @@
-enablePlugins(org.nlogo.build.NetLogoExtension, org.nlogo.build.ExtensionDocumentationPlugin)
+enablePlugins(org.nlogo.build.NetLogoExtension)
 
 scalaSource in Compile := baseDirectory.value / "src" / "main"
 

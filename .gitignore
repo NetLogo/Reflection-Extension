@@ -6,3 +6,4 @@ target/*
 *.jar
 *.jar.*
 *.xml
+*.zip
