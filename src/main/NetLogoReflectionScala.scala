@@ -20,50 +20,73 @@ class NetLogoReflectionScala extends DefaultClassManager {
 class Globals extends Reporter {
   override def getSyntax = Syntax.reporterSyntax(ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef = {
-    val observer = App.app.workspace.world.observer
-    (0 until observer.getVariableCount).map(observer.variableName).toLogoList
+    context match {
+      case extContext: ExtensionContext => {
+        //if (extContext.nvmContext.workspace == null) {
+        if (extContext.workspace == null) {
+          throw new ExtensionException(s"We need a workspace : $extContext");
+        }
+        val observer = extContext.workspace.world.observer
+        (0 until observer.getVariableCount).map(observer.variableName).toLogoList
+      }
+      case _ => throw new ExtensionException(s"Unknown context given : $context")
+    }
   }
 }
 
 class Breeds extends Reporter {
   override def getSyntax = Syntax.reporterSyntax(ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef = {
-    val breeds = new LogoListBuilder
-    // add turtle vars as a separate tuple
-    val turtleInfo = new LogoListBuilder
-    turtleInfo.add("TURTLES")
-    val turtleVars = App.app.workspace.world.program.turtleVars.keys.toVector.toLogoList
-    turtleInfo.add(turtleVars)
-    breeds.add(turtleInfo.toLogoList)
-    // now the rest of the breeds
-    val otherBreeds = App.app.workspace.world.program.breeds.map {
-      case (name, vars) =>
-        val breedInfo = new LogoListBuilder
-        breedInfo.add(name)
-        breedInfo.add(vars.owns.toLogoList)
-        breedInfo.toLogoList
+    context match {
+      case extContext: ExtensionContext => {
+        val breeds = new LogoListBuilder
+        // add turtle vars as a separate tuple
+        val turtleInfo = new LogoListBuilder
+        turtleInfo.add("TURTLES")
+        // val workspace = App.app.workspace;
+        val workspace = extContext.workspace;
+        val turtleVars = workspace.world.program.turtleVars.keys.toVector.toLogoList
+        turtleInfo.add(turtleVars)
+        breeds.add(turtleInfo.toLogoList)
+        // now the rest of the breeds
+        val otherBreeds = workspace.world.program.breeds.map {
+          case (name, vars) =>
+            val breedInfo = new LogoListBuilder
+            breedInfo.add(name)
+            breedInfo.add(vars.owns.toLogoList)
+            breedInfo.toLogoList
+        }
+        otherBreeds.foreach(breeds.add)
+        breeds.toLogoList
+      }
+      case _ => throw new ExtensionException(s"Unknown context given : $context")
     }
-    otherBreeds.foreach(breeds.add)
-    breeds.toLogoList
   }
 }
 
 class Procedures extends Reporter {
   override def getSyntax = Syntax.reporterSyntax(ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef = {
-    App.app.workspace.procedures.map {
-      case (name, procedure) =>
-        val procedureInfo = new LogoListBuilder
-        procedureInfo.add(name)
-        procedureInfo.add(if (procedure.isReporter) "REPORTER" else "COMMAND")
-        procedureInfo.add(procedure.agentClassString)
-        // args contains dummies (temp 'lets') so we don't include them.
-        // localsCount contains number of lets so we just subtract that
-        val argsCount = procedure.args.size - procedure.localsCount
-        val args = procedure.args.take(argsCount).toLogoList
-        procedureInfo.add(args)
-        procedureInfo.toLogoList
-    }.toVector.toLogoList
+    context match {
+      case extContext: ExtensionContext => {
+        //val workspace = App.app.workspace
+        var workspace = extContext.workspace
+        workspace.procedures.map {
+          case (name, procedure) =>
+            val procedureInfo = new LogoListBuilder
+            procedureInfo.add(name)
+            procedureInfo.add(if (procedure.isReporter) "REPORTER" else "COMMAND")
+            procedureInfo.add(procedure.agentClassString)
+            // args contains dummies (temp 'lets') so we don't include them.
+            // localsCount contains number of lets so we just subtract that
+            val argsCount = procedure.args.size - procedure.localsCount
+            val args = procedure.args.take(argsCount).toLogoList
+            procedureInfo.add(args)
+            procedureInfo.toLogoList
+        }.toVector.toLogoList
+      }
+      case _ => throw new ExtensionException(s"Unknown context given : $context")
+    }
   }
 }
 
