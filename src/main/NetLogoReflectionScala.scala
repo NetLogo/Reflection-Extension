@@ -22,7 +22,6 @@ class Globals extends Reporter {
   override def report(args: Array[Argument], context: Context): AnyRef = {
     context match {
       case extContext: ExtensionContext => {
-        //if (extContext.nvmContext.workspace == null) {
         if (extContext.workspace == null) {
           throw new ExtensionException(s"We need a workspace : $extContext");
         }
@@ -43,7 +42,6 @@ class Breeds extends Reporter {
         // add turtle vars as a separate tuple
         val turtleInfo = new LogoListBuilder
         turtleInfo.add("TURTLES")
-        // val workspace = App.app.workspace;
         val workspace = extContext.workspace;
         val turtleVars = workspace.world.program.turtleVars.keys.toVector.toLogoList
         turtleInfo.add(turtleVars)
@@ -69,7 +67,6 @@ class Procedures extends Reporter {
   override def report(args: Array[Argument], context: Context): AnyRef = {
     context match {
       case extContext: ExtensionContext => {
-        //val workspace = App.app.workspace
         var workspace = extContext.workspace
         workspace.procedures.map {
           case (name, procedure) =>
