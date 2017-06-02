@@ -1,0 +1,57 @@
+reflection-gets-globals-when-none-defined
+  extensions [ reflection ]
+  globals [ ]
+  breed [ cars car ]
+  turtles-own [ turt1 ]
+  cars-own [ cars1 ]
+  reflection:globals => []
+
+
+reflection-gets-globals
+  extensions [ reflection ]
+  globals [ glob1 ]
+  breed [ cars car ]
+  turtles-own [ turt1 ]
+  cars-own [ cars1 ]
+  reflection:globals => ["GLOB1"]
+
+reflection-gets-breeds-works-with-no-custom-defined
+  extensions [ reflection ]
+  globals [ glob1 ]
+  turtles-own [ turt1 ]
+  reflection:breeds => [["TURTLES" ["WHO" "COLOR" "HEADING" "XCOR" "YCOR" "SHAPE" "LABEL" "LABEL-COLOR" "BREED" "HIDDEN?" "SIZE" "PEN-SIZE" "PEN-MODE" "TURT1"]]]
+
+reflection-gets-breeds-works-with-custom
+  extensions [ reflection ]
+  globals [ glob1 ]
+  breed [ cars car ]
+  breed [ vans van ]
+  turtles-own [ turt1 ]
+  cars-own [ cars1 ]
+  reflection:breeds => [["TURTLES" ["WHO" "COLOR" "HEADING" "XCOR" "YCOR" "SHAPE" "LABEL" "LABEL-COLOR" "BREED" "HIDDEN?" "SIZE" "PEN-SIZE" "PEN-MODE" "TURT1"]] ["CARS" ["CARS1"]] ["VANS" []]]
+
+reflection-gets-procedures-works-when-none-defined
+  extensions [ reflection ]
+  reflection:procedures => []
+
+reflection-gets-procedures
+  extensions [ reflection ]
+  to-report rev [tacos] report (tacos - 1) end
+  to start let vs 0 show vs end
+  reflection:procedures => [["REV" "REPORTER" "OTPL" ["TACOS"]] ["START" "COMMAND" "OTPL" []]]
+
+reflection-gets-current-procedure
+  extensions [ reflection ]
+  to-report rev [tacos] set tacos (tacos - 1) report reflection:current-procedure end
+  to start let vs 0 show vs end
+  rev 10 => "REV"
+
+*reflection-gets-current-procedure-works-from-command
+  extensions [ reflection ]
+  reflection:current-procedure => "__EVALUATOR"
+
+*reflection-gets-callers
+  extensions [ reflection ]
+  to-report rev [tacos] set tacos (tacos - 1) report reflection:callers end
+  to start let vs 0 show vs end
+  rev 10 => ["REV" "__EVALUATOR"]
