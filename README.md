@@ -3,7 +3,7 @@ This extension allows you to extract names of breeds, procedures, and variables 
 It has a few simple reporters:
 
 ## `globals`
-reflection:globals reports a list with the names of all global variables
+`reflection:globals` reports a list with the names of all global variables
 
 ## `breeds`
 `reflection:breeds` reports a list of all breed names, and all their variables, default variables included.
