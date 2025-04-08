@@ -26,7 +26,7 @@ class Globals extends Reporter {
           throw new ExtensionException(s"We need a workspace : $extContext");
         }
         val observer = extContext.workspace.world.observer
-        (0 until observer.getVariableCount).map(observer.variableName).toLogoList
+        (0 until observer.variables.size).map(observer.variableName).toLogoList
       }
       case _ => throw new ExtensionException(s"Unknown context given : $context")
     }

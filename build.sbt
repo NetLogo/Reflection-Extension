@@ -1,27 +1,34 @@
 enablePlugins(org.nlogo.build.NetLogoExtension)
 
-scalaSource in Compile := baseDirectory.value / "src" / "main"
-
-scalaSource in Test := baseDirectory.value / "src" / "test"
+Compile / scalaSource := baseDirectory.value / "src" / "main"
+Test    / scalaSource := baseDirectory.value / "src" / "test"
 
 netLogoClassManager := "org.nlogo.extensions.reflection.NetLogoReflectionScala"
 
-netLogoVersion := "6.0.1-M1"
+netLogoVersion := "6.4.0"
 
 netLogoTarget := NetLogoExtension.directoryTarget(baseDirectory.value)
+
+lazy val asmDependencies = {
+  val asmVersion = "9.7.1"
+  Seq(
+    "org.ow2.asm" % "asm"         % asmVersion % "test",
+    "org.ow2.asm" % "asm-commons" % asmVersion % "test",
+    "org.ow2.asm" % "asm-util"    % asmVersion % "test"
+  )
+}
 
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
-      scalaVersion := "2.12.1"
-      ,version      := "0.1.0-SNAPSHOT"
+      scalaVersion := "2.12.2"
+      ,version      := "0.2.0-SNAPSHOT"
     ))
     ,name :=  "reflection"
     ,libraryDependencies ++= Seq(
-      "org.picocontainer"  % "picocontainer" % "2.13.6" % "test",
-      "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-      "org.ow2.asm" % "asm-all" % "5.0.3"  % "test"
-    )
+      "org.picocontainer"  % "picocontainer" % "2.15.2" % "test",
+      "org.scalatest" %% "scalatest" % "3.2.19" % "test"
+    ) ++ asmDependencies
   )
 
 val moveToRefDir = taskKey[Unit]("add all resources to Reflection directory")
@@ -31,17 +38,17 @@ val refDirectory = settingKey[File]("directory that extension is moved to for te
 refDirectory := baseDirectory.value / "extensions" / "reflection"
 
 moveToRefDir := {
-  (packageBin in Compile).value
+  (Compile / packageBin).value
   val testTarget = NetLogoExtension.directoryTarget(refDirectory.value)
   testTarget.create(NetLogoExtension.netLogoPackagedFiles.value)
-  val testResources = (baseDirectory.value / "test" ***).filter(_.isFile)
+  val testResources = Path.allSubpaths(baseDirectory.value / "test").map(_._1).filter(_.isFile)
   for (file <- testResources.get)
     IO.copyFile(file, refDirectory.value / "test" / IO.relativize(baseDirectory.value / "test", file).get)
 }
 
-test in Test := {
+Test / test := {
   IO.createDirectory(refDirectory.value)
   moveToRefDir.value
-  (test in Test).value
+  (Test / test).value
   IO.delete(refDirectory.value)
 }
