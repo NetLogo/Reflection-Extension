@@ -8,7 +8,7 @@ import org.nlogo.api.{ LogoListBuilder, Reporter, Context, Argument, PrimitiveMa
 import org.nlogo.api.ScalaConversions._
 
 class NetLogoReflectionScala extends DefaultClassManager {
-  override def load(manager: PrimitiveManager) {
+  override def load(manager: PrimitiveManager) = {
     manager.addPrimitive("globals", new Globals)
     manager.addPrimitive("breeds", new Breeds)
     manager.addPrimitive("procedures", new Procedures);

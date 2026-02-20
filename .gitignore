@@ -1,3 +1,4 @@
+/.bsp
 /bin/*
 *.class
 target
@@ -7,3 +8,4 @@ target/*
 *.jar.*
 *.xml
 *.zip
+.bundledFiles
